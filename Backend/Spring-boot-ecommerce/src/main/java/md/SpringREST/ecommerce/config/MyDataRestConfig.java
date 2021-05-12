@@ -1,7 +1,9 @@
 package md.SpringREST.ecommerce.config;
 
+import md.SpringREST.ecommerce.entity.Country;
 import md.SpringREST.ecommerce.entity.Product;
 import md.SpringREST.ecommerce.entity.ProductCategory;
+import md.SpringREST.ecommerce.entity.State;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
@@ -33,17 +35,19 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
 
         HttpMethod[] theUnsupportedaction = {HttpMethod.DELETE, HttpMethod.POST, HttpMethod.PUT};
 
-        config.getExposureConfiguration()
-                .forDomainType(Product.class)
-                .withItemExposure(((metdata, httpMethods) -> httpMethods.disable(theUnsupportedaction)))
-                .withCollectionExposure(((metdata, httpMethods) -> httpMethods.disable(theUnsupportedaction)));
-
-        config.getExposureConfiguration()
-                .forDomainType(ProductCategory.class)
-                .withItemExposure(((metdata, httpMethods) -> httpMethods.disable(theUnsupportedaction)))
-                .withCollectionExposure(((metdata, httpMethods) -> httpMethods.disable(theUnsupportedaction)));
+        disableHttpMethonds(Product.class, config, theUnsupportedaction);
+        disableHttpMethonds(ProductCategory.class, config, theUnsupportedaction);
+        disableHttpMethonds(Country.class, config, theUnsupportedaction);
+        disableHttpMethonds(State.class, config, theUnsupportedaction);
 
         expozeIds(config);
+    }
+
+    private void disableHttpMethonds(Class theClass, RepositoryRestConfiguration config, HttpMethod[] theUnsupportedaction) {
+        config.getExposureConfiguration()
+                .forDomainType(theClass)
+                .withItemExposure(((metdata, httpMethods) -> httpMethods.disable(theUnsupportedaction)))
+                .withCollectionExposure(((metdata, httpMethods) -> httpMethods.disable(theUnsupportedaction)));
     }
 
     private void expozeIds(RepositoryRestConfiguration configuration) {
